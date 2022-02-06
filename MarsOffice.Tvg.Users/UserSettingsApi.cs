@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -60,31 +61,64 @@ namespace MarsOffice.Tvg.Users
                 await userSettingsTable.AddAsync(entity);
                 await userSettingsTable.FlushAsync();
 
-                var deleteOp = TableOperation.Delete(new TikTokAccountEntity
-                {
-                    PartitionKey = userId,
-                    ETag = "*"
-                });
-                try
-                {
-                    await tikTokAccountsTable.ExecuteAsync(deleteOp);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-
+                var existingTikTokAccountsQuery = new TableQuery<TikTokAccountEntity>()
+                    .Where(
+                        TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal,
+                       userId)
+                    );
+                var existingTikTokAccounts = await tikTokAccountsTable.ExecuteQuerySegmentedAsync(existingTikTokAccountsQuery, null);
+                var newTikTokAccounts = new List<TikTokAccount>();
                 if (payload.TikTokAccounts != null)
                 {
                     foreach (var ttAcc in payload.TikTokAccounts)
                     {
-                        var ttAccEntity = _mapper.Map<TikTokAccountEntity>(ttAcc);
-                        ttAccEntity.UserId = userId;
-                        ttAccEntity.PartitionKey = userId;
-                        ttAccEntity.RowKey = ttAccEntity.Username;
-                        var insertOp = TableOperation.InsertOrReplace(ttAccEntity);
-                        await tikTokAccountsTable.ExecuteAsync(insertOp);
+                        ttAcc.UserId = userId;
                     }
+                    newTikTokAccounts.AddRange(payload.TikTokAccounts);
+                }
+
+                var toDelete = existingTikTokAccounts.Where(x => !newTikTokAccounts.Any(y => y.Username == x.Username)).ToList();
+
+                foreach (var e in toDelete)
+                {
+                    e.ETag = "*";
+                    var deleteOp = TableOperation.Delete(e);
+                    try
+                    {
+                        await tikTokAccountsTable.ExecuteAsync(deleteOp);
+                    }
+                    catch (Exception)
+                    {
+                        // ignored
+                    }
+                }
+
+                var toAdd = _mapper.Map<IEnumerable<TikTokAccountEntity>>(
+                    newTikTokAccounts.Where(x => !existingTikTokAccounts.Any(y => y.Username == x.Username)).ToList()
+                );
+
+                foreach (var e in toAdd)
+                {
+                    e.ETag = "*";
+                    e.UserId = userId;
+                    e.PartitionKey = userId;
+                    e.RowKey = e.Username;
+                    var op = TableOperation.InsertOrReplace(e);
+                    await tikTokAccountsTable.ExecuteAsync(op);
+                }
+
+                var toUpdate = _mapper.Map<IEnumerable<TikTokAccountEntity>>(
+                    newTikTokAccounts.Where(x => existingTikTokAccounts.Any(y => y.Username == x.Username)).ToList()
+                );
+
+                foreach (var e in toUpdate)
+                {
+                    e.ETag = "*";
+                    e.UserId = userId;
+                    e.PartitionKey = userId;
+                    e.RowKey = e.Username;
+                    var op = TableOperation.Replace(e);
+                    await tikTokAccountsTable.ExecuteAsync(op);
                 }
 
                 return new OkObjectResult(payload);
