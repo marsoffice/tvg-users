@@ -1,4 +1,4 @@
-name: tgv-users
+name: tvg-users
 on:
   push:
     branches: [develop, master]

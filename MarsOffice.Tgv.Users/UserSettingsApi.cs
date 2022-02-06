@@ -116,7 +116,7 @@ namespace MarsOffice.Tgv.Users
                    TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal,
                        userId)))
                        .Take(1);
-                var result = await userSettingsTable.ExecuteQuerySegmentedAsync<UserSettingsEntity>(query, null);
+                var result = await userSettingsTable.ExecuteQuerySegmentedAsync(query, null);
                 if (!result.Results.Any())
                 {
                     return new JsonResult(null);
@@ -167,7 +167,7 @@ namespace MarsOffice.Tgv.Users
                    TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal,
                        userId)))
                        .Take(1);
-                var result = await userSettingsTable.ExecuteQuerySegmentedAsync<UserSettingsEntity>(query, null);
+                var result = await userSettingsTable.ExecuteQuerySegmentedAsync(query, null);
                 if (!result.Results.Any())
                 {
                     return new JsonResult(null);
