@@ -21,6 +21,10 @@ namespace MarsOffice.Tgv.Users
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
+            builder.Services.AddAutoMapper((svc, cfg) =>
+            {
+                cfg.AllowNullCollections = true;
+            }, typeof(Startup).Assembly);
         }
     }
 }
