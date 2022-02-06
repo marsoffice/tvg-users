@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MarsOffice.Tgv.Users.Abstractions
+namespace MarsOffice.Tvg.Users.Abstractions
 {
     public class UserSettings
     {

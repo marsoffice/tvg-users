@@ -1,4 +1,4 @@
-namespace MarsOffice.Tgv.Users.Abstractions
+namespace MarsOffice.Tvg.Users.Abstractions
 {
     public class TikTokAccount
     {

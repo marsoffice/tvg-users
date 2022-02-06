@@ -2,12 +2,12 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<AzureFunctionsVersion>v4</AzureFunctionsVersion>
-		<RootNamespace>MarsOffice.Tgv.Users</RootNamespace>
+		<RootNamespace>MarsOffice.Tvg.Users</RootNamespace>
 		<_FunctionsSkipCleanOutput>true</_FunctionsSkipCleanOutput>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 	<ItemGroup>
-		<ProjectReference Include="../MarsOffice.Tgv.Users.Abstractions/MarsOffice.Tgv.Users.Abstractions.csproj" />
+		<ProjectReference Include="../MarsOffice.Tvg.Users.Abstractions/MarsOffice.Tvg.Users.Abstractions.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="MarsOffice.Microfunction" Version="3.0.12" />

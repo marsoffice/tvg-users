@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "MarsOffice.Tgv.Users": {
+    "MarsOffice.Tvg.Users": {
       "commandName": "Project",
       "commandLineArgs": "--port 7001"
     }

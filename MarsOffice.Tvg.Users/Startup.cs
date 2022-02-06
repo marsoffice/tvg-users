@@ -4,8 +4,8 @@ using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-[assembly: FunctionsStartup(typeof(MarsOffice.Tgv.Users.Startup))]
-namespace MarsOffice.Tgv.Users
+[assembly: FunctionsStartup(typeof(MarsOffice.Tvg.Users.Startup))]
+namespace MarsOffice.Tvg.Users
 {
     public class Startup : FunctionsStartup
     {

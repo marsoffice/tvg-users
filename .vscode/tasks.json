@@ -59,7 +59,7 @@
       "type": "func",
       "dependsOn": "build (functions)",
       "options": {
-        "cwd": "${workspaceFolder}/MarsOffice.Tgv.Users/bin/Debug/net6.0"
+        "cwd": "${workspaceFolder}/MarsOffice.Tvg.Users/bin/Debug/net6.0"
       },
       "command": "host start --port 7001",
       "isBackground": true,

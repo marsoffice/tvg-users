@@ -4,7 +4,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 
-namespace MarsOffice.Tgv.Users
+namespace MarsOffice.Tvg.Users
 {
     public class Signalr
     {

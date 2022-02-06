@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.Azure.Cosmos.Table;
 
-namespace MarsOffice.Tgv.Users.Entities
+namespace MarsOffice.Tvg.Users.Entities
 {
     public class UserSettingsEntity : TableEntity
     {

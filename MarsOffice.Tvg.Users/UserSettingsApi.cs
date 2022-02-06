@@ -5,8 +5,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using MarsOffice.Microfunction;
-using MarsOffice.Tgv.Users.Abstractions;
-using MarsOffice.Tgv.Users.Entities;
+using MarsOffice.Tvg.Users.Abstractions;
+using MarsOffice.Tvg.Users.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos.Table;
@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace MarsOffice.Tgv.Users
+namespace MarsOffice.Tvg.Users
 {
 
     public class UserSettingsApi

@@ -1,8 +1,8 @@
 using AutoMapper;
-using MarsOffice.Tgv.Users.Abstractions;
-using MarsOffice.Tgv.Users.Entities;
+using MarsOffice.Tvg.Users.Abstractions;
+using MarsOffice.Tvg.Users.Entities;
 
-namespace MarsOffice.Tgv.Users.Mappers
+namespace MarsOffice.Tvg.Users.Mappers
 {
     public class TikTokAccountMapper : Profile
     {

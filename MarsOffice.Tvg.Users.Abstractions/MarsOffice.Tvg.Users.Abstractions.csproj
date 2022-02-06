@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <IsPackable>true</IsPackable>
-    <PackageId>MarsOffice.Tgv.Users.Abstractions</PackageId>
+    <PackageId>MarsOffice.Tvg.Users.Abstractions</PackageId>
     <Authors>marsoffice</Authors>
     <Company>marsoffice</Company>
     <PackageDescription>marsoffice</PackageDescription>

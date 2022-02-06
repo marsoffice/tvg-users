@@ -55,12 +55,12 @@ jobs:
             ${{ runner.os }}-nuget-${{ github.workflow }}-build-${{ secrets.CACHE_VERSION }}-
 
       - name: dotnet build
-        run: dotnet build -c Release -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} MarsOffice.Tgv.Users.sln
+        run: dotnet build -c Release -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} MarsOffice.Tvg.Users.sln
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: dotnet pack
-        run: dotnet pack -c Release -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} -o ./dist --no-build MarsOffice.Tgv.Users.sln
+        run: dotnet pack -c Release -p:PackageVersion=${{ steps.gitversion.outputs.semVer }} -o ./dist --no-build MarsOffice.Tvg.Users.sln
 
       - name: upload artifact
         uses: actions/upload-artifact@v2.2.4
@@ -123,7 +123,7 @@ jobs:
 
       - name: dotnet publish
         run: |
-          dotnet publish -c Release -o ./dist ./MarsOffice.Tgv.Users
+          dotnet publish -c Release -o ./dist ./MarsOffice.Tvg.Users
 
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.GH_TOKEN }}
