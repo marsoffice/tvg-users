@@ -7,6 +7,5 @@ namespace MarsOffice.Tvg.Users.Entities
     {
         public string UserId { get; set; }
         public bool? DisableEmailNotifications { get; set; }
-        public IEnumerable<TikTokAccountEntity> TikTokAccounts { get; set; }
     }
 }

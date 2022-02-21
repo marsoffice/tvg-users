@@ -34,8 +34,7 @@ namespace MarsOffice.Tvg.Users
         [FunctionName("SaveUserSettings")]
         public async Task<IActionResult> SaveUserSettings(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "api/users/saveUserSettings")] HttpRequest req,
-            [Table("UserSettings", Connection = "localsaconnectionstring")] IAsyncCollector<UserSettingsEntity> userSettingsTable,
-            [Table("TikTokAccounts", Connection = "localsaconnectionstring")] CloudTable tikTokAccountsTable,
+            [Table("UserSettings", Connection = "localsaconnectionstring")] CloudTable userSettingsTable,
             ILogger log
             )
         {
@@ -58,69 +57,9 @@ namespace MarsOffice.Tvg.Users
                 entity.ETag = "*";
                 entity.PartitionKey = entity.UserId;
                 entity.RowKey = entity.UserId;
-                await userSettingsTable.AddAsync(entity);
-                await userSettingsTable.FlushAsync();
 
-                var existingTikTokAccountsQuery = new TableQuery<TikTokAccountEntity>()
-                    .Where(
-                        TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal,
-                       userId)
-                    );
-                var existingTikTokAccounts = await tikTokAccountsTable.ExecuteQuerySegmentedAsync(existingTikTokAccountsQuery, null);
-                var newTikTokAccounts = new List<TikTokAccount>();
-                if (payload.TikTokAccounts != null)
-                {
-                    foreach (var ttAcc in payload.TikTokAccounts)
-                    {
-                        ttAcc.UserId = userId;
-                    }
-                    newTikTokAccounts.AddRange(payload.TikTokAccounts);
-                }
-
-                var toDelete = existingTikTokAccounts.Where(x => !newTikTokAccounts.Any(y => y.Username == x.Username)).ToList();
-
-                foreach (var e in toDelete)
-                {
-                    e.ETag = "*";
-                    var deleteOp = TableOperation.Delete(e);
-                    try
-                    {
-                        await tikTokAccountsTable.ExecuteAsync(deleteOp);
-                    }
-                    catch (Exception)
-                    {
-                        // ignored
-                    }
-                }
-
-                var toAdd = _mapper.Map<IEnumerable<TikTokAccountEntity>>(
-                    newTikTokAccounts.Where(x => !existingTikTokAccounts.Any(y => y.Username == x.Username)).ToList()
-                );
-
-                foreach (var e in toAdd)
-                {
-                    e.ETag = "*";
-                    e.UserId = userId;
-                    e.PartitionKey = userId;
-                    e.RowKey = e.Username;
-                    var op = TableOperation.InsertOrReplace(e);
-                    await tikTokAccountsTable.ExecuteAsync(op);
-                }
-
-                var toUpdate = _mapper.Map<IEnumerable<TikTokAccountEntity>>(
-                    newTikTokAccounts.Where(x => existingTikTokAccounts.Any(y => y.Username == x.Username)).ToList()
-                );
-
-                foreach (var e in toUpdate)
-                {
-                    e.ETag = "*";
-                    e.UserId = userId;
-                    e.PartitionKey = userId;
-                    e.RowKey = e.Username;
-                    var op = TableOperation.Replace(e);
-                    await tikTokAccountsTable.ExecuteAsync(op);
-                }
-
+                var op = TableOperation.InsertOrMerge(entity);
+                await userSettingsTable.ExecuteAsync(op);
                 return new OkObjectResult(payload);
             }
             catch (Exception e)
@@ -134,7 +73,6 @@ namespace MarsOffice.Tvg.Users
         public async Task<IActionResult> GetUserSettings(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "api/users/getUserSettings")] HttpRequest req,
             [Table("UserSettings", Connection = "localsaconnectionstring")] CloudTable userSettingsTable,
-            [Table("TikTokAccounts", Connection = "localsaconnectionstring")] CloudTable tikTokAccountsTable,
             ILogger log
             )
         {
@@ -158,12 +96,6 @@ namespace MarsOffice.Tvg.Users
 
                 var settings = _mapper.Map<UserSettings>(result.First());
 
-                var ttAccQuery = new TableQuery<TikTokAccountEntity>().Where(
-                    TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, userId));
-
-                var tikTokAccounts = await tikTokAccountsTable.ExecuteQuerySegmentedAsync(ttAccQuery, null);
-                settings.TikTokAccounts = tikTokAccounts.Select(x => _mapper.Map<TikTokAccount>(x)).ToList();
-
                 return new JsonResult(
                     settings
                 );
@@ -179,7 +111,6 @@ namespace MarsOffice.Tvg.Users
         public async Task<IActionResult> GetUserSettingsInternal(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "api/users/getUserSettingsInternal/{id}")] HttpRequest req,
             [Table("UserSettings", Connection = "localsaconnectionstring")] CloudTable userSettingsTable,
-            [Table("TikTokAccounts", Connection = "localsaconnectionstring")] CloudTable tikTokAccountsTable,
             ILogger log,
             ClaimsPrincipal principal
             )
@@ -208,12 +139,6 @@ namespace MarsOffice.Tvg.Users
                 }
 
                 var settings = _mapper.Map<UserSettings>(result.First());
-
-                var ttAccQuery = new TableQuery<TikTokAccountEntity>().Where(
-                    TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, userId));
-
-                var tikTokAccounts = await tikTokAccountsTable.ExecuteQuerySegmentedAsync(ttAccQuery, null);
-                settings.TikTokAccounts = tikTokAccounts.Select(x => _mapper.Map<TikTokAccount>(x)).ToList();
 
                 return new JsonResult(
                     settings
